@@ -126,9 +126,3 @@ Feel free to contribute by creating a pull request or raising issues. Feedback a
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-Happy coding! :computer:
-```
-
-This `README.md` file outlines the essential steps for deploying the Flask Questionnaire app on Kubernetes. You can further customize it depending on any specific details related to your project.
