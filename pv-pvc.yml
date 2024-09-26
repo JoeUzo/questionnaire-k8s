@@ -1,0 +1,33 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv
+  namespace: dev
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1.5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.27.189 
+    path: /mnt/share/
+  persistentVolumeReclaimPolicy: Retain
+
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pvc
+  namespace: dev
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

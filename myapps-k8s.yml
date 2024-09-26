@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    environment: development
+  annotations:
+    owner: admin@email.com
+
+
+---
+kind: Deployment
+apiVersion: apps/v1 
+metadata:
+  name: ques
+  namespace: dev
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: ques-app
+  template:
+    metadata:
+      labels:
+        app: ques-app
+    spec:
+      containers:
+        - name: ques-app-ct
+          image: joeuzo/questionnaire:1.0.1
+          envFrom:
+            - secretRef:
+                name: myapps-env
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: ques-app-svc
+    namespace: dev
+spec:
+    type: NodePort
+    selector:
+        app: ques-app
+    ports:
+     - port: 80
+       targetPort: 5000
+       nodePort: 32020  
+
+
+---
+kind: Deployment
+apiVersion: apps/v1 
+metadata: 
+  name: postgres-deployment
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: postgres
+  template:
+    metadata:
+        labels: 
+            app: postgres
+    spec:
+        volumes:
+          - name: postgres-storage
+            persistentVolumeClaim:
+              claimName: postgres-pvc
+        containers:
+            - name: postgres-ct
+              image: postgres:13
+              env:
+                - name: PGDATA
+                  value: /var/lib/postgresql/data/db
+              envFrom:
+                - secretRef:
+                    name: postgres-secret
+              volumeMounts:
+                - name: postgres-storage
+                  mountPath: /var/lib/postgresql/data
+              ports:
+                - containerPort: 5432
+              resources:
+                limits:
+                  cpu: "500m"
+                  memory: "512Mi"
+                requests:
+                  cpu: "250m"
+                  memory: "256Mi"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: postgres-svc
+    namespace: dev
+spec:
+    type: ClusterIP
+    selector:
+        app: postgres
+    ports:
+     - port: 5432
+       targetPort: 5432
