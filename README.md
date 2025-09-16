@@ -19,7 +19,7 @@
 
 
 ## Overview 
-This repository contains the configuration files and setup to deploy the [Flask Questionnaire](https://github.com/JoeUzo/Flask-Questionnaire) web application on a Kubernetes cluster. The Flask Questionnaire is a Python Flask web application that allows users to register, log in, complete questionnaires, and view their results.
+This repository contains the configuration files and setup to deploy the [Flask Questionnaire](https://github.com/JoeUzo/Questionnaire) web application on a Kubernetes cluster. The Flask Questionnaire is a Python Flask web application that allows users to register, log in, complete questionnaires, and view their results.
 
 ## Features
 - User authentication and session management
